@@ -6,8 +6,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { SeverityBadge } from '@/components/ui/severity-badge';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { EmptyState } from '@/components/ui/empty-state';
-import { Search, Filter, Sparkles, Shield } from 'lucide-react';
+import { Search, Sparkles, Shield, Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useAITriage } from '@/hooks/useAITriage';
 
 // Demo data
 const demoFindings = [
@@ -25,6 +26,9 @@ export default function Findings() {
   const [searchQuery, setSearchQuery] = useState('');
   const [severityFilter, setSeverityFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [analyzingId, setAnalyzingId] = useState<string | null>(null);
+  
+  const { analyzeFinding, triageAll, isAnalyzing } = useAITriage();
 
   const filteredFindings = demoFindings.filter(finding => {
     const matchesSearch = finding.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -34,14 +38,31 @@ export default function Findings() {
     return matchesSearch && matchesSeverity && matchesStatus;
   });
 
+  const handleAnalyzeFinding = async (findingId: string) => {
+    setAnalyzingId(findingId);
+    await analyzeFinding(findingId);
+    setAnalyzingId(null);
+  };
+
+  const handleTriageAll = async () => {
+    const unanalyzedIds = filteredFindings
+      .filter(f => f.status === 'new')
+      .map(f => f.id);
+    await triageAll(unanalyzedIds);
+  };
+
   return (
     <div className="p-6 space-y-6">
       <PageHeader
         title="Security Findings"
         description="View and manage security vulnerabilities across all projects"
       >
-        <Button>
-          <Sparkles className="h-4 w-4 mr-2" />
+        <Button onClick={handleTriageAll} disabled={isAnalyzing}>
+          {isAnalyzing && !analyzingId ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : (
+            <Sparkles className="h-4 w-4 mr-2" />
+          )}
           AI Triage All
         </Button>
       </PageHeader>
@@ -112,8 +133,17 @@ export default function Findings() {
                       <span className="font-mono">{finding.file}:{finding.line}</span>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">
-                    <Sparkles className="h-4 w-4 mr-1" />
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleAnalyzeFinding(finding.id)}
+                    disabled={isAnalyzing}
+                  >
+                    {analyzingId === finding.id ? (
+                      <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                    ) : (
+                      <Sparkles className="h-4 w-4 mr-1" />
+                    )}
                     Analyze
                   </Button>
                 </div>

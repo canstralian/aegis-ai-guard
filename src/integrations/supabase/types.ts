@@ -828,7 +828,38 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      organization_members_public: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          is_active_member: boolean | null
+          organization_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string | null
+          is_active_member?: never
+          organization_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string | null
+          is_active_member?: never
+          organization_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_members_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       get_org_from_project: { Args: { _project_id: string }; Returns: string }
@@ -836,6 +867,7 @@ export type Database = {
         Args: { _workspace_id: string }
         Returns: string
       }
+      get_org_member_ids: { Args: { _org_id: string }; Returns: string[] }
       get_user_org_ids: { Args: { _user_id: string }; Returns: string[] }
       has_any_role: {
         Args: {
