@@ -473,6 +473,157 @@ export type Database = {
           },
         ]
       }
+      github_repositories: {
+        Row: {
+          created_at: string
+          default_branch: string
+          findings_synced: number | null
+          full_name: string
+          github_id: number
+          html_url: string
+          id: string
+          integration_id: string
+          last_sync_at: string | null
+          last_sync_error: string | null
+          last_sync_status: string | null
+          name: string
+          organization_id: string
+          owner: string
+          private: boolean
+          project_id: string | null
+          sync_code_scanning: boolean
+          sync_dependabot: boolean
+          sync_secret_scanning: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          default_branch?: string
+          findings_synced?: number | null
+          full_name: string
+          github_id: number
+          html_url: string
+          id?: string
+          integration_id: string
+          last_sync_at?: string | null
+          last_sync_error?: string | null
+          last_sync_status?: string | null
+          name: string
+          organization_id: string
+          owner: string
+          private?: boolean
+          project_id?: string | null
+          sync_code_scanning?: boolean
+          sync_dependabot?: boolean
+          sync_secret_scanning?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          default_branch?: string
+          findings_synced?: number | null
+          full_name?: string
+          github_id?: number
+          html_url?: string
+          id?: string
+          integration_id?: string
+          last_sync_at?: string | null
+          last_sync_error?: string | null
+          last_sync_status?: string | null
+          name?: string
+          organization_id?: string
+          owner?: string
+          private?: boolean
+          project_id?: string | null
+          sync_code_scanning?: boolean
+          sync_dependabot?: boolean
+          sync_secret_scanning?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "github_repositories_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "github_repositories_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "github_repositories_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      github_sync_jobs: {
+        Row: {
+          alerts_found: number | null
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          findings_created: number | null
+          findings_updated: number | null
+          id: string
+          organization_id: string
+          repository_id: string
+          started_at: string | null
+          status: string
+          sync_type: string
+        }
+        Insert: {
+          alerts_found?: number | null
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          findings_created?: number | null
+          findings_updated?: number | null
+          id?: string
+          organization_id: string
+          repository_id: string
+          started_at?: string | null
+          status?: string
+          sync_type: string
+        }
+        Update: {
+          alerts_found?: number | null
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          findings_created?: number | null
+          findings_updated?: number | null
+          id?: string
+          organization_id?: string
+          repository_id?: string
+          started_at?: string | null
+          status?: string
+          sync_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "github_sync_jobs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "github_sync_jobs_repository_id_fkey"
+            columns: ["repository_id"]
+            isOneToOne: false
+            referencedRelation: "github_repositories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ingestion_jobs: {
         Row: {
           completed_at: string | null
