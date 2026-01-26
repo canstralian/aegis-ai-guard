@@ -20,7 +20,7 @@
 ### Backend
 - **Supabase** - PostgreSQL database, authentication, serverless functions
 - **Deno** - Runtime for edge functions
-- **Lovable AI Gateway** - AI inference (Google Gemini 3 Flash model)
+- **Lovable AI Gateway** - AI inference (google/gemini-3-flash-preview, preview model)
 
 ## Project Structure
 
