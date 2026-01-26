@@ -162,7 +162,7 @@ Key fields on `findings` table:
 
 ### Enums
 - **finding_severity**: `critical`, `high`, `medium`, `low`, `info`
-- **finding_status**: `open`, `in_progress`, `resolved`, `false_positive`, `accepted_risk`, `needs_review`
+- **finding_status**: `new`, `triaged`, `in_progress`, `resolved`, `ignored`, `false_positive`
 - **finding_source**: `sast`, `dast`, `sca`, `container`, `iac`, `secret`, `manual`
 - **app_role**: `org_owner`, `security_admin`, `security_analyst`, `devops_engineer`, `developer`, `auditor`
 
