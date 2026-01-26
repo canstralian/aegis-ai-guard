@@ -107,9 +107,11 @@ toast.error('Something went wrong');
 - Custom hooks encapsulate API logic (e.g., `useAITriage`)
 
 ### Routing
-Protected routes wrap content in `AppLayout`:
+Protected routes use `AppLayout` as a parent route with nested routes:
 ```typescript
-<Route path="/dashboard" element={<AppLayout><Dashboard /></AppLayout>} />
+<Route element={<AppLayout />}>
+  <Route path="/dashboard" element={<Dashboard />} />
+</Route>
 ```
 
 Main routes:
