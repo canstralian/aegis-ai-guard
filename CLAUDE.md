@@ -163,7 +163,7 @@ Key fields on `findings` table:
 ### Enums
 - **finding_severity**: `critical`, `high`, `medium`, `low`, `info`
 - **finding_status**: `new`, `triaged`, `in_progress`, `resolved`, `ignored`, `false_positive`
-- **finding_source**: `sast`, `dast`, `sca`, `container`, `iac`, `secret`, `manual`
+- **finding_source**: `sast`, `sca`, `secrets`, `iac`, `container`, `cspm`, `runtime`, `manual`, `github_dependabot`, `github_code_scanning`, `github_secret_scanning`
 - **app_role**: `org_owner`, `security_admin`, `security_analyst`, `devops_engineer`, `developer`, `auditor`
 
 ## AI Triage Function
