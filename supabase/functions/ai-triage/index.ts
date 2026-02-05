@@ -6,6 +6,14 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const MAX_ANALYSES_PER_HOUR = 20;
+
+function isUuid(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    value,
+  );
+}
+
 interface Finding {
   id: string;
   title: string;
@@ -107,15 +115,82 @@ serve(async (req) => {
       );
     }
 
-    const body: TriageRequest = await req.json();
+    let body: TriageRequest;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "Invalid JSON body" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
     const { finding_id, finding_ids, action } = body;
 
+    if (action !== "analyze" && action !== "triage_all") {
+      return new Response(
+        JSON.stringify({ error: "Invalid action" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    if (finding_id && !isUuid(finding_id)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid finding_id" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    if (finding_ids && (!Array.isArray(finding_ids) || finding_ids.some((id) => !isUuid(id)))) {
+      return new Response(
+        JSON.stringify({ error: "Invalid finding_ids" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     console.log(`AI Triage request: action=${action}, user=${user.id}`);
+
+    // Per-user rate limiting (defense-in-depth)
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const { count: recentCount, error: rateLimitError } = await supabaseAdmin
+      .from("ai_activity_logs")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("action", "ai_triage")
+      .gte("created_at", oneHourAgo);
+
+    if (rateLimitError) {
+      console.error("Rate limit query error:", rateLimitError);
+      return new Response(
+        JSON.stringify({ error: "Internal server error" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    if ((recentCount ?? 0) >= MAX_ANALYSES_PER_HOUR) {
+      return new Response(
+        JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
 
     // Get findings to analyze
     let findings: Finding[] = [];
     
     if (action === "analyze" && finding_id) {
+      // Explicit access check (RLS already helps, but fail closed with a clear 403)
+      const { data: accessRow, error: accessError } = await supabaseUser
+        .from("findings")
+        .select("id")
+        .eq("id", finding_id)
+        .maybeSingle();
+
+      if (accessError || !accessRow) {
+        return new Response(
+          JSON.stringify({ error: "Finding not found or access denied" }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
       // Single finding analysis
       const { data, error } = await supabaseUser
         .from("findings")
@@ -145,6 +220,16 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ message: "No findings to analyze", analyzed: 0 }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Enforce hourly cap even for batches
+    if ((recentCount ?? 0) + findings.length > MAX_ANALYSES_PER_HOUR) {
+      return new Response(
+        JSON.stringify({
+          error: `Rate limit exceeded. Max ${MAX_ANALYSES_PER_HOUR} analyses per hour. Try a smaller batch later.`,
+        }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
