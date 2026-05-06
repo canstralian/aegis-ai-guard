@@ -59,7 +59,6 @@ Local configuration must not be committed. Keep real values in local environment
 Expected client-side variables:
 
 ```sh
-VITE_SUPABASE_PROJECT_ID=
 VITE_SUPABASE_URL=
 VITE_SUPABASE_PUBLISHABLE_KEY=
 ```
