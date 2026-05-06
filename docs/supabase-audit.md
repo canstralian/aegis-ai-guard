@@ -1,6 +1,6 @@
 # Supabase Audit Checklist
 
-Use this checklist before treating the app as production ready.
+Use this checklist before treating the app as production-ready.
 
 ## Database
 
