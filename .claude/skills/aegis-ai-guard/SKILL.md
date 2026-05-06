@@ -1,69 +1,85 @@
-```markdown
 # aegis-ai-guard Development Patterns
 
-> Auto-generated skill from repository analysis
+> Repo-local skill generated from repository analysis and corrected against current code.
 
 ## Overview
-This skill outlines the core development patterns and workflows for the `aegis-ai-guard` TypeScript codebase. It covers coding conventions, file organization, commit styles, and the main project workflow for updating documentation. This guide is designed to help contributors maintain consistency and efficiency when working on the project.
+
+This skill captures the practical development patterns for the `aegis-ai-guard` TypeScript codebase. Use it as guidance, not as a replacement for checking the actual files before making changes.
+
+## Project Stack
+
+- Vite, React, and TypeScript for the client application.
+- Tailwind CSS and shadcn-ui for the interface system.
+- Supabase for backend services, authentication, database access, and storage integration.
+- Vitest and Testing Library for frontend tests.
+- ESLint for static checks.
 
 ## Coding Conventions
 
 ### File Naming
-- Use **camelCase** for file names.
-  - Example: `aiGuard.ts`, `userManager.test.ts`
+
+- Follow the surrounding directory convention when adding files.
+- React components and pages may use PascalCase, such as `App.tsx`.
+- Utility-style modules may use camelCase when that matches nearby files.
 
 ### Imports
-- Use **absolute import paths**.
-  - Example:
-    ```typescript
-    import { validateUser } from 'utils/validation';
-    ```
+
+- Prefer the configured `@/` alias for imports from `src`.
+- Keep package imports external and source imports explicit.
+
+Example:
+
+```typescript
+import { AppLayout } from "@/components/layout/AppLayout";
+```
 
 ### Exports
-- Use **named exports** exclusively.
-  - Example:
-    ```typescript
-    // In aiGuard.ts
-    export function guardLogic() { ... }
-    export const GUARD_CONSTANT = 42;
-    ```
+
+- Named exports are common for reusable modules, providers, and components.
+- Default exports exist in the current React app, including `src/App.tsx`, so do not enforce named exports exclusively.
+- Match the existing pattern in the file or nearby feature area.
 
 ### Commit Messages
-- Commit types are mixed, with common prefixes like `docs` and `chore`.
-- Keep commit messages concise (average: ~31 characters).
-  - Example: `docs: update usage section`
+
+- Use concise conventional-style prefixes where appropriate, such as `docs:` or `chore:`.
+- Keep commit messages direct and tied to the change.
 
 ## Workflows
 
 ### Update README Documentation
-**Trigger:** When someone wants to update or replace the main project documentation.  
-**Command:** `/update-readme`
 
-1. Edit `README.md` with new or updated information.
-2. Commit your changes with a message referencing documentation or README.
-   - Example: `docs: revise installation steps`
-3. Push your changes and open a pull request if required.
+**Trigger:** Updating or replacing the main project documentation.
+
+1. Edit `README.md` with accurate project, setup, security, or deployment information.
+2. Keep the documented commands aligned with `package.json`.
+3. Commit with a documentation-focused message.
+
+Example:
+
+```text
+docs: revise setup notes
+```
 
 ## Testing Patterns
 
-- Test files follow the pattern: `*.test.*`
-  - Example: `aiGuard.test.ts`
-- The testing framework is not explicitly specified; check existing test files for conventions.
-- Example test file structure:
-  ```typescript
-  import { guardLogic } from 'aiGuard';
+- The repository uses Vitest via `npm test` and `npm run test:watch`.
+- Test files should follow the existing `*.test.*` convention when tests are added.
+- Prefer Testing Library for React component behavior.
 
-  describe('guardLogic', () => {
-    it('should return true for valid input', () => {
-      // test implementation
-    });
-  });
-  ```
+Example:
+
+```typescript
+import { describe, expect, it } from "vitest";
+
+import { render, screen } from "@testing-library/react";
+
+// Add focused tests around user-visible behavior.
+```
 
 ## Commands
 
-| Command         | Purpose                                         |
-|-----------------|-------------------------------------------------|
-| /update-readme  | Update or replace the main project documentation |
-
-```
+| Command | Purpose |
+| --- | --- |
+| `npm run lint` | Run ESLint checks. |
+| `npm test` | Run Vitest once. |
+| `npm run build` | Build the Vite application. |
