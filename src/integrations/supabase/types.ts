@@ -120,6 +120,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "assets_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "integrations_safe"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "assets_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
@@ -628,6 +635,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "github_repositories_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "integrations_safe"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "github_repositories_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
@@ -752,6 +766,13 @@ export type Database = {
             columns: ["integration_id"]
             isOneToOne: false
             referencedRelation: "integrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ingestion_jobs_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "integrations_safe"
             referencedColumns: ["id"]
           },
           {
@@ -1058,6 +1079,59 @@ export type Database = {
       }
     }
     Views: {
+      integrations_safe: {
+        Row: {
+          config: Json | null
+          created_at: string | null
+          health_check_at: string | null
+          id: string | null
+          last_error: string | null
+          last_sync_at: string | null
+          name: string | null
+          organization_id: string | null
+          scopes: string[] | null
+          status: Database["public"]["Enums"]["integration_status"] | null
+          type: Database["public"]["Enums"]["integration_type"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string | null
+          health_check_at?: string | null
+          id?: string | null
+          last_error?: string | null
+          last_sync_at?: string | null
+          name?: string | null
+          organization_id?: string | null
+          scopes?: string[] | null
+          status?: Database["public"]["Enums"]["integration_status"] | null
+          type?: Database["public"]["Enums"]["integration_type"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string | null
+          health_check_at?: string | null
+          id?: string | null
+          last_error?: string | null
+          last_sync_at?: string | null
+          name?: string | null
+          organization_id?: string | null
+          scopes?: string[] | null
+          status?: Database["public"]["Enums"]["integration_status"] | null
+          type?: Database["public"]["Enums"]["integration_type"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integrations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organization_members_public: {
         Row: {
           created_at: string | null
