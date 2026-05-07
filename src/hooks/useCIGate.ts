@@ -32,16 +32,17 @@ export function useCIGate(projectId: string | undefined) {
     if (!projectId) return;
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
+      // Use type assertion since tables may not be in generated types yet
+      const { data, error } = await (supabase as any)
         .from('deployment_gates')
         .select('*')
         .eq('project_id', projectId)
         .maybeSingle();
 
       if (error) throw error;
-      setGate(data);
+      setGate(data as DeploymentGate | null);
 
-      const { data: checksData, error: checksError } = await supabase
+      const { data: checksData, error: checksError } = await (supabase as any)
         .from('gate_checks')
         .select('*')
         .eq('project_id', projectId)
@@ -65,7 +66,7 @@ export function useCIGate(projectId: string | undefined) {
     if (!projectId) return;
     setIsSaving(true);
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('deployment_gates')
         .upsert(
           {
@@ -79,7 +80,7 @@ export function useCIGate(projectId: string | undefined) {
         .single();
 
       if (error) throw error;
-      setGate(data);
+      setGate(data as DeploymentGate);
       toast.success('CI gate configuration saved');
     } catch (error) {
       console.error('Failed to save gate config:', error);
@@ -119,7 +120,7 @@ export function useCIGate(projectId: string | undefined) {
         toast.error(result.error || 'Gate check failed');
       }
 
-      await fetchGate(); // Refresh checks
+      await fetchGate();
       return result;
     } catch (error) {
       console.error('Gate check failed:', error);
