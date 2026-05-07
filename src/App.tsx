@@ -14,6 +14,7 @@ import Signup from "@/pages/auth/Signup";
 import Dashboard from "@/pages/Dashboard";
 import Findings from "@/pages/Findings";
 import NotFound from "@/pages/NotFound";
+import CIGate from "@/pages/CIGate";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/upload" element={<Dashboard />} />
               <Route path="/admin/team" element={<Dashboard />} />
               <Route path="/admin/audit-logs" element={<Dashboard />} />
+              <Route path="/admin/ci-gate" element={<CIGate />} />
               <Route path="/admin/settings" element={<Dashboard />} />
             </Route>
             

@@ -36,6 +36,7 @@ import {
   ChevronDown,
   Building2,
   Upload,
+  ShieldCheck,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ROLE_CONFIG } from '@/lib/constants';
@@ -51,6 +52,7 @@ const mainNavItems = [
 
 const adminNavItems = [
   { name: 'Team', href: '/admin/team', icon: Users },
+  { name: 'CI Gate', href: '/admin/ci-gate', icon: ShieldCheck },
   { name: 'Audit Logs', href: '/admin/audit-logs', icon: ScrollText },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];

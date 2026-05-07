@@ -178,6 +178,44 @@ export type Database = {
           },
         ]
       }
+      deployment_gates: {
+        Row: {
+          auto_created: boolean
+          block_on_severities: string[]
+          created_at: string
+          enabled: boolean
+          id: string
+          project_id: string
+          updated_at: string
+        }
+        Insert: {
+          auto_created?: boolean
+          block_on_severities?: string[]
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          project_id: string
+          updated_at?: string
+        }
+        Update: {
+          auto_created?: boolean
+          block_on_severities?: string[]
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          project_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deployment_gates_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: true
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       environments: {
         Row: {
           created_at: string
@@ -466,6 +504,47 @@ export type Database = {
           },
           {
             foreignKeyName: "findings_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gate_checks: {
+        Row: {
+          api_token_hint: string | null
+          blocking_finding_count: number
+          blocking_findings_summary: Json | null
+          created_at: string
+          id: string
+          project_id: string
+          status: string
+          triggered_by: string | null
+        }
+        Insert: {
+          api_token_hint?: string | null
+          blocking_finding_count?: number
+          blocking_findings_summary?: Json | null
+          created_at?: string
+          id?: string
+          project_id: string
+          status: string
+          triggered_by?: string | null
+        }
+        Update: {
+          api_token_hint?: string | null
+          blocking_finding_count?: number
+          blocking_findings_summary?: Json | null
+          created_at?: string
+          id?: string
+          project_id?: string
+          status?: string
+          triggered_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gate_checks_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
