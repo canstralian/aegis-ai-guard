@@ -36,6 +36,7 @@ import {
   ChevronDown,
   Building2,
   Upload,
+  ShieldCheck,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ROLE_CONFIG } from '@/lib/constants';
