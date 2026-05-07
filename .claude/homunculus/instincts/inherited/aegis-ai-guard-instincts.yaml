@@ -1,0 +1,302 @@
+# Instincts generated from https://github.com/canstralian/aegis-ai-guard
+# Generated: 2026-05-06T04:23:26.024Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: aegis-ai-guard-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Commit Length
+
+## Action
+
+Keep commit messages concise (~31 characters)
+
+## Evidence
+
+- Average commit message length: 31 chars
+- Based on 6 commits
+
+---
+id: aegis-ai-guard-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Naming Files
+
+## Action
+
+Use camelCase naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: camelCase
+
+---
+id: aegis-ai-guard-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: aegis-ai-guard-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: aegis-ai-guard-workflow-update-readme-documentation
+trigger: "when doing update readme documentation"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Workflow Update Readme Documentation
+
+## Action
+
+Follow the update-readme-documentation workflow:
+1. Edit README.md with new or updated information
+2. Commit changes with a message referencing documentation or README
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: README.md
+
+---
+id: aegis-ai-guard-instinct-file-naming
+trigger: "When creating a new file in the codebase"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Instinct File Naming
+
+## Action
+
+Name the file using camelCase convention
+
+## Evidence
+
+- Pattern in namingConventions.files: camelCase
+
+---
+id: aegis-ai-guard-instinct-function-naming
+trigger: "When defining a new function"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Instinct Function Naming
+
+## Action
+
+Name the function using camelCase convention
+
+## Evidence
+
+- Pattern in namingConventions.functions: camelCase
+
+---
+id: aegis-ai-guard-instinct-class-naming
+trigger: "When defining a new class"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Instinct Class Naming
+
+## Action
+
+Name the class using PascalCase convention
+
+## Evidence
+
+- Pattern in namingConventions.classes: PascalCase
+
+---
+id: aegis-ai-guard-instinct-constant-naming
+trigger: "When defining a new constant"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Instinct Constant Naming
+
+## Action
+
+Name the constant using SCREAMING_SNAKE_CASE convention
+
+## Evidence
+
+- Pattern in namingConventions.constants: SCREAMING_SNAKE_CASE
+
+---
+id: aegis-ai-guard-instinct-import-style
+trigger: "When importing modules in TypeScript files"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Instinct Import Style
+
+## Action
+
+Use absolute import paths
+
+## Evidence
+
+- Pattern in importStyle: absolute
+
+---
+id: aegis-ai-guard-instinct-export-style
+trigger: "When exporting functions or classes"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Instinct Export Style
+
+## Action
+
+Use named exports
+
+## Evidence
+
+- Pattern in exportStyle: named
+
+---
+id: aegis-ai-guard-instinct-error-handling
+trigger: "When handling errors in code"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Instinct Error Handling
+
+## Action
+
+Use try-catch blocks for error handling
+
+## Evidence
+
+- Pattern in errorHandling.style: try-catch
+
+---
+id: aegis-ai-guard-instinct-git-commit-prefix
+trigger: "When making a commit"
+confidence: 0.85
+domain: git
+source: repo-analysis
+source_repo: canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Instinct Git Commit Prefix
+
+## Action
+
+Prefix commit messages with 'docs:' for documentation or 'chore:' for maintenance tasks
+
+## Evidence
+
+- Seen in commit: docs: add Supabase audit checklist
+- Seen in commit: chore: add environment example
+- Pattern in commits.prefixes
+
+---
+id: aegis-ai-guard-instinct-git-commit-length
+trigger: "When writing a commit message"
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Instinct Git Commit Length
+
+## Action
+
+Keep commit messages concise, around 30 characters on average
+
+## Evidence
+
+- Pattern in commits.averageLength: 31
+
+---
+id: aegis-ai-guard-instinct-update-readme
+trigger: "When someone wants to update or replace the main project documentation"
+confidence: 0.95
+domain: workflow
+source: repo-analysis
+source_repo: canstralian/aegis-ai-guard
+---
+
+# Aegis Ai Guard Instinct Update Readme
+
+## Action
+
+Edit README.md with new or updated information and commit changes with a message referencing documentation or README
+
+## Evidence
+
+- Workflow: update-readme-documentation
+- Seen in commit: Update README.md
+
