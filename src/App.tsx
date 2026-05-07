@@ -40,6 +40,7 @@ const App = () => (
               <Route path="/upload" element={<Dashboard />} />
               <Route path="/admin/team" element={<Dashboard />} />
               <Route path="/admin/audit-logs" element={<Dashboard />} />
+              <Route path="/admin/ci-gate" element={<CIGate />} />
               <Route path="/admin/settings" element={<Dashboard />} />
             </Route>
             
