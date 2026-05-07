@@ -2,3 +2,6 @@ project_id = "mhvaobkdcmmaoarsgdxx"
 
 [functions.ai-triage]
 verify_jwt = false
+
+[functions.ci-gate]
+verify_jwt = false
