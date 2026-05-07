@@ -52,6 +52,7 @@ const mainNavItems = [
 
 const adminNavItems = [
   { name: 'Team', href: '/admin/team', icon: Users },
+  { name: 'CI Gate', href: '/admin/ci-gate', icon: ShieldCheck },
   { name: 'Audit Logs', href: '/admin/audit-logs', icon: ScrollText },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
