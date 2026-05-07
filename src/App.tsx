@@ -14,6 +14,7 @@ import Signup from "@/pages/auth/Signup";
 import Dashboard from "@/pages/Dashboard";
 import Findings from "@/pages/Findings";
 import NotFound from "@/pages/NotFound";
+import CIGate from "@/pages/CIGate";
 
 const queryClient = new QueryClient();
 
