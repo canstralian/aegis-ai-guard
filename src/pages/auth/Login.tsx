@@ -8,11 +8,15 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Shield, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
+const DEMO_EMAIL = 'demo@aegis.dev';
+const DEMO_PASSWORD = 'demo1234!';
+
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn } = useAuth();
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
+  const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,6 +30,24 @@ export default function Login() {
       setIsLoading(false);
     } else {
       toast.success('Welcome back!');
+      navigate('/dashboard');
+    }
+  };
+
+  const handleDemoLogin = async () => {
+    setIsDemoLoading(true);
+    // Try signing in first; if that fails, create the demo account then sign in
+    let { error } = await signIn(DEMO_EMAIL, DEMO_PASSWORD);
+    if (error) {
+      await signUp(DEMO_EMAIL, DEMO_PASSWORD, 'Demo User');
+      const result = await signIn(DEMO_EMAIL, DEMO_PASSWORD);
+      error = result.error;
+    }
+    if (error) {
+      toast.error('Demo login failed: ' + error.message);
+      setIsDemoLoading(false);
+    } else {
+      toast.success('Welcome to the demo!');
       navigate('/dashboard');
     }
   };
@@ -66,8 +88,26 @@ export default function Login() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full" disabled={isLoading || isDemoLoading}>
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign In'}
+            </Button>
+            <div className="relative w-full">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">or</span>
+              </div>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              disabled={isLoading || isDemoLoading}
+              onClick={handleDemoLogin}
+            >
+              {isDemoLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              Demo login
             </Button>
             <p className="text-sm text-muted-foreground">
               Don't have an account?{' '}
