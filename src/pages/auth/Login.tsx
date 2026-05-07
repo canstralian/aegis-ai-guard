@@ -8,11 +8,15 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Shield, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
+const DEMO_EMAIL = 'demo@aegis.dev';
+const DEMO_PASSWORD = 'demo1234!';
+
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn } = useAuth();
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
+  const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,6 +30,24 @@ export default function Login() {
       setIsLoading(false);
     } else {
       toast.success('Welcome back!');
+      navigate('/dashboard');
+    }
+  };
+
+  const handleDemoLogin = async () => {
+    setIsDemoLoading(true);
+    // Try signing in first; if that fails, create the demo account then sign in
+    let { error } = await signIn(DEMO_EMAIL, DEMO_PASSWORD);
+    if (error) {
+      await signUp(DEMO_EMAIL, DEMO_PASSWORD, 'Demo User');
+      const result = await signIn(DEMO_EMAIL, DEMO_PASSWORD);
+      error = result.error;
+    }
+    if (error) {
+      toast.error('Demo login failed: ' + error.message);
+      setIsDemoLoading(false);
+    } else {
+      toast.success('Welcome to the demo!');
       navigate('/dashboard');
     }
   };
