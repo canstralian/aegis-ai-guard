@@ -57,7 +57,8 @@ for (const code of allCodes) {
   const after = headCodes[code] ?? "—";
   if (before !== after) {
     const arrow = before === "—" ? "🆕" : after === "—" ? "🗑️" : after > before ? "🔺" : "🔻";
-    changedRows.push(`| \`${code}\` | ${before} | ${after} | ${arrow} |`);
+    const label = labels[code] ? ` <sub>${labels[code]}</sub>` : "";
+    changedRows.push(`| \`${code}\`${label} | ${before} | ${after} | ${arrow} |`);
   }
 }
 
