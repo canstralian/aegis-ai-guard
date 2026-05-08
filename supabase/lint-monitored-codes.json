@@ -1,0 +1,19 @@
+{
+  "_comment": "Registry of Supabase DB lint codes monitored by CI. Add an entry here AND a count in lint-baseline.json to start tracking a new code. `name` must match the linter's `name` field (the code without the leading numeric prefix).",
+  "codes": [
+    {
+      "code": "0027_pg_graphql_authenticated_table_exposed",
+      "name": "pg_graphql_authenticated_table_exposed",
+      "label": "GraphQL exposure (authenticated)",
+      "description": "Table or view is discoverable via pg_graphql to the `authenticated` role.",
+      "docs": "https://supabase.com/docs/guides/database/database-linter?lint=0027_pg_graphql_authenticated_table_exposed"
+    },
+    {
+      "code": "0029_authenticated_security_definer_function_executable",
+      "name": "authenticated_security_definer_function_executable",
+      "label": "SECURITY DEFINER function executable by authenticated",
+      "description": "SECURITY DEFINER function is EXECUTE-able by the `authenticated` role.",
+      "docs": "https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable"
+    }
+  ]
+}

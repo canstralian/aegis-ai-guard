@@ -2,13 +2,14 @@
 /**
  * Interactive helper to update supabase/lint-baseline.json.
  *
- * Runs `supabase db lint`, diffs current counts against the baseline for
- * monitored codes, prompts you for a justification on any change, then
- * writes the new baseline and appends an entry to supabase/lint-baseline.log.md.
+ * Reads the monitored-code registry from supabase/lint-monitored-codes.json,
+ * runs `supabase db lint`, diffs current counts against the baseline, prompts
+ * for a justification on any change, then writes the new baseline and appends
+ * an entry to supabase/lint-baseline.log.md.
  *
  * Usage:
  *   node scripts/update-lint-baseline.mjs
- *   node scripts/update-lint-baseline.mjs --yes   # accept all increases without prompting
+ *   node scripts/update-lint-baseline.mjs --yes   # accept all changes without prompting
  */
 import { execSync } from "node:child_process";
 import { readFileSync, writeFileSync, existsSync, appendFileSync } from "node:fs";
@@ -19,11 +20,13 @@ import { stdin as input, stdout as output } from "node:process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const baselinePath = resolve(__dirname, "../supabase/lint-baseline.json");
+const registryPath = resolve(__dirname, "../supabase/lint-monitored-codes.json");
 const logPath = resolve(__dirname, "../supabase/lint-baseline.log.md");
 
 const autoYes = process.argv.includes("--yes");
 const baseline = JSON.parse(readFileSync(baselinePath, "utf8"));
-const MONITORED = Object.keys(baseline.codes);
+const registry = JSON.parse(readFileSync(registryPath, "utf8"));
+const MONITORED = registry.codes;
 
 function runLint() {
   const dbUrl = process.env.SUPABASE_DB_URL;
@@ -46,23 +49,22 @@ const issues = Array.isArray(report) ? report : report.issues ?? [];
 
 const counts = {};
 const details = {};
-for (const code of MONITORED) {
-  const suffix = code.replace(/^\d+_/, "");
-  const matching = issues.filter((i) => i.name === suffix);
-  counts[code] = matching.length;
-  details[code] = matching.map((i) => i.detail || i.description || "(no detail)");
+for (const entry of MONITORED) {
+  const matching = issues.filter((i) => i.name === entry.name);
+  counts[entry.code] = matching.length;
+  details[entry.code] = matching.map((i) => i.detail || i.description || "(no detail)");
 }
 
 console.log("\nMonitored lint code counts:\n");
 console.log("  Code".padEnd(60), "current".padStart(8), " baseline");
 console.log("  " + "-".repeat(80));
 const changes = [];
-for (const code of MONITORED) {
-  const current = counts[code];
-  const previous = baseline.codes[code];
+for (const entry of MONITORED) {
+  const current = counts[entry.code];
+  const previous = baseline.codes[entry.code] ?? 0;
   const arrow = current === previous ? " " : current > previous ? "▲" : "▼";
-  console.log("  " + code.padEnd(58), String(current).padStart(8), " " + previous + " " + arrow);
-  if (current !== previous) changes.push({ code, current, previous });
+  console.log("  " + entry.code.padEnd(58), String(current).padStart(8), " " + previous + " " + arrow);
+  if (current !== previous) changes.push({ entry, current, previous });
 }
 
 if (changes.length === 0) {
@@ -71,34 +73,30 @@ if (changes.length === 0) {
 }
 
 const rl = createInterface({ input, output });
-
 async function ask(q) {
   if (autoYes) return "auto-accepted via --yes";
-  const a = await rl.question(q);
-  return a.trim();
+  return (await rl.question(q)).trim();
 }
 
 console.log("\nChanges detected. You'll be prompted for justification per code.\n");
 const newBaseline = { ...baseline, codes: { ...baseline.codes } };
 const logEntries = [];
 
-for (const { code, current, previous } of changes) {
-  console.log(`\n— ${code}: ${previous} → ${current}`);
-  if (details[code].length) {
+for (const { entry, current, previous } of changes) {
+  console.log(`\n— ${entry.code} (${entry.label}): ${previous} → ${current}`);
+  if (details[entry.code].length) {
     console.log("  Findings:");
-    for (const d of details[code].slice(0, 10)) console.log("   • " + d);
-    if (details[code].length > 10) console.log(`   …and ${details[code].length - 10} more`);
+    for (const d of details[entry.code].slice(0, 10)) console.log("   • " + d);
+    if (details[entry.code].length > 10) console.log(`   …and ${details[entry.code].length - 10} more`);
   }
-  const accept = autoYes
-    ? "y"
-    : (await ask("  Accept new count? [y/N] ")).toLowerCase();
+  const accept = autoYes ? "y" : (await ask("  Accept new count? [y/N] ")).toLowerCase();
   if (accept !== "y" && accept !== "yes") {
     console.log("  Skipped — baseline left unchanged for this code.");
     continue;
   }
   const reason = await ask("  Justification (one line): ");
-  newBaseline.codes[code] = current;
-  logEntries.push({ code, previous, current, reason: reason || "(none provided)" });
+  newBaseline.codes[entry.code] = current;
+  logEntries.push({ code: entry.code, label: entry.label, previous, current, reason: reason || "(none provided)" });
 }
 
 await rl.close();
@@ -114,7 +112,7 @@ const stamp = new Date().toISOString();
 const author = process.env.USER || process.env.USERNAME || "unknown";
 let logBlock = `\n## ${stamp} — ${author}\n`;
 for (const e of logEntries) {
-  logBlock += `- \`${e.code}\`: ${e.previous} → ${e.current}\n  - ${e.reason}\n`;
+  logBlock += `- \`${e.code}\` (${e.label}): ${e.previous} → ${e.current}\n  - ${e.reason}\n`;
 }
 if (!existsSync(logPath)) {
   writeFileSync(logPath, "# Lint Baseline Change Log\n");

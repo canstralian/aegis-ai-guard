@@ -8,12 +8,22 @@
  * - Sets a `body` GitHub Actions output (empty if no relevant changes)
  */
 import { execSync } from "node:child_process";
-import { writeFileSync, appendFileSync } from "node:fs";
+import { writeFileSync, appendFileSync, readFileSync, existsSync } from "node:fs";
 
 const BASE = process.env.BASE_SHA;
 const HEAD = process.env.HEAD_SHA || "HEAD";
 const BASELINE = "supabase/lint-baseline.json";
 const LOG = "supabase/lint-baseline.log.md";
+const REGISTRY = "supabase/lint-monitored-codes.json";
+
+const labels = {};
+if (existsSync(REGISTRY)) {
+  try {
+    for (const entry of JSON.parse(readFileSync(REGISTRY, "utf8")).codes ?? []) {
+      labels[entry.code] = entry.label || entry.name || entry.code;
+    }
+  } catch {}
+}
 
 if (!BASE) {
   console.error("BASE_SHA env var required");
@@ -47,7 +57,8 @@ for (const code of allCodes) {
   const after = headCodes[code] ?? "—";
   if (before !== after) {
     const arrow = before === "—" ? "🆕" : after === "—" ? "🗑️" : after > before ? "🔺" : "🔻";
-    changedRows.push(`| \`${code}\` | ${before} | ${after} | ${arrow} |`);
+    const label = labels[code] ? ` <sub>${labels[code]}</sub>` : "";
+    changedRows.push(`| \`${code}\`${label} | ${before} | ${after} | ${arrow} |`);
   }
 }
 
