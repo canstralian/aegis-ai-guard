@@ -1,0 +1,33 @@
+name: Lint Baseline PR Comment
+
+on:
+  pull_request:
+    paths:
+      - "supabase/lint-baseline.json"
+      - "supabase/lint-baseline.log.md"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build summary
+        id: summary
+        run: node scripts/lint-baseline-pr-summary.mjs
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
+      - name: Upsert PR comment
+        if: steps.summary.outputs.body != ''
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: lint-baseline
+          path: lint-baseline-comment.md
