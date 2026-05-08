@@ -1,0 +1,38 @@
+name: Supabase DB Linter
+
+on:
+  pull_request:
+    paths:
+      - "supabase/migrations/**"
+      - "supabase/lint-baseline.json"
+      - "scripts/check-db-lint.mjs"
+      - ".github/workflows/db-lint.yml"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  db-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start local Supabase stack
+        run: supabase db start
+        env:
+          SUPABASE_NON_INTERACTIVE: "1"
+
+      - name: Apply migrations
+        run: supabase db reset --no-seed
+
+      - name: Run lint regression check
+        run: node scripts/check-db-lint.mjs
